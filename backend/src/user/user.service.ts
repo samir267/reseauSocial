@@ -5,6 +5,8 @@ import { MongoRepository } from "typeorm";
 import { User } from "./entities/user.entity";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { jwtConstants } from "src/auth/utils/constants";
+import { MailerService } from '@nestjs-modules/mailer';
+import { EmailService } from "src/email/email.service";
 @Injectable()
 export class UserService {
   constructor(
@@ -59,4 +61,5 @@ export class UserService {
 
     return user.refreshToken;
   }
+
 }

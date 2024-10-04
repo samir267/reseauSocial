@@ -7,6 +7,8 @@ import { dataSourceOptions } from './db/data-source';
 import { UserModule } from './user/user.module';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -14,8 +16,11 @@ import { AuthModule } from './auth/auth.module';
      dataSourceOptions,
     ),
     UserModule,
-    ConfigModule.forRoot({ envFilePath: `${process.env.NODE_ENV}.env` }),
-    AuthModule,
+    ConfigModule.forRoot({
+      isGlobal: true, // no need to import into other modules
+    }),    AuthModule,
+
+    EmailModule,
     ],
   controllers: [AppController],
   providers: [AppService],

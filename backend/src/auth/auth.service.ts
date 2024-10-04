@@ -7,12 +7,15 @@ import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcrypt';
+import { EmailService } from 'src/email/email.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UserService,
     private jwtService: JwtService,
+    private emailService: EmailService
+
   ) {}
 
   async signIn(email: string, pass: string) {
@@ -62,6 +65,8 @@ export class AuthService {
       );
       return { message: 'Username already exists. Suggestions:', suggestions };
     }
+    const code = Math.floor(1000 + Math.random() * 9000).toString();
+    await this.emailService.sendUserWelcome(payload, code);
 
     // Hash the password before saving the user
     const hashedPassword = await this.hashPassword(payload.password);
