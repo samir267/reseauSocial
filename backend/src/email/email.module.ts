@@ -13,15 +13,15 @@ import { ConfigService } from '@nestjs/config';
     MailerModule.forRootAsync({
       useFactory: async (config: ConfigService) => ({
         transport: {
-          host: 'smtp.gmail.com',
+          host: config.get('MAIL_HOST'),
           secure: false,
           auth: {
-            user: 'samirchemkhi09@gmail.com',
-            pass: 'wjrgomceevfmgwet',
+            user: config.get('SMTP_USERNAME'),
+            pass: config.get('SMTP_PASSWORD'),
           },
         },
         defaults: {
-          from: `"Nice App" <${'samirchemkhi09@gmail.com'}>`,
+          from: `"Nice App" <${config.get('SMTP_USERNAME')}>`,
         },
         template: {
           dir: join(__dirname, 'templates'),
