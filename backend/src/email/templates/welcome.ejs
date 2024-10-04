@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Coder Zone</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #2C3E50;
+            font-size: 24px;
+            border-bottom: 2px solid #3498DB;
+            padding-bottom: 10px;
+        }
+
+        p {
+            color: #555;
+            font-size: 16px;
+        }
+
+        .code {
+            display: inline-block;
+            background-color: #e9ecef;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            color: #333;
+            font-size: 18px;
+            margin: 20px 0;
+            text-align: center;
+            width: 100%;
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #999;
+            text-align: center;
+        }
+
+        .footer p {
+            margin: 5px 0;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            .code {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Welcome to Coder Zone, <%= name %>!</h1>
+        <p>Thank you for signing up for Coder Zone. We are thrilled to have you join our community of coders!</p>
+
+        <p>Please use the following code to confirm your email:</p>
+        <p class="code"><%= code %></p>
+
+        <div class="footer">
+            <p>Cheers,<br>The Coder Zone Team</p>
+            <p>&copy; <%= new Date().getFullYear() %> Coder Zone. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+
+</html>
