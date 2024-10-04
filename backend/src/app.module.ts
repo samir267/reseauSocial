@@ -18,7 +18,8 @@ import { EmailModule } from './email/email.module';
     UserModule,
     ConfigModule.forRoot({
       isGlobal: true, // no need to import into other modules
-    }),    AuthModule,
+    }),   
+     AuthModule,
 
     EmailModule,
     ],
