@@ -9,6 +9,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { jwtConstants } from './utils/constants';
 import { AuthGuard } from './utils/Guard/auth.guard';
 import { GoogleStrategy } from './utils/Strategie/google.strategie';
+import { FacebookStrategy } from './utils/Strategie/FacebookStrategy';
 
 
 @Module({
@@ -28,7 +29,8 @@ import { GoogleStrategy } from './utils/Strategie/google.strategie';
       useClass: AuthGuard,
     },
     AuthService,
-    GoogleStrategy
+    GoogleStrategy,
+    FacebookStrategy
   ],
   exports: [AuthService]
 })
