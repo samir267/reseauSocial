@@ -2,9 +2,17 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { config } from 'dotenv';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.enableCors({ origin: true });
+// Enable CORS for all origins
+app.enableCors({
+  origin: '*', // Allow all origins
+  credentials: true, // If you are using cookies, keep this true
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+});
+
+app.useGlobalPipes(new ValidationPipe());
   const config = new DocumentBuilder()
   .setTitle('Coder Zone API') // Updated title to reflect your project
   .setDescription('API documentation for the Coder Zone application') // Updated description

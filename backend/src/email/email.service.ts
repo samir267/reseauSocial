@@ -2,11 +2,14 @@
 
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { User } from 'src/user/entities/user.entity';
 
 @Injectable()
 export class EmailService {
-  constructor(private mailerService: MailerService) {}
+  constructor(private mailerService: MailerService,        
+    private readonly configService: ConfigService,
+  ) {}
 
   async sendUserWelcome(user: any, code: string) {
 
@@ -21,4 +24,19 @@ export class EmailService {
       },
     });
   }
+  async sendPasswordResetEmail(email: string, token: string,username:string): Promise<void> {
+    const baseUrl = this.configService.get<string>('BASE_URL'); // Replace 'BASE_URL' with your actual environment variable key
+    const resetLink = encodeURI(`${baseUrl}/reset-password?token=${token}`);
+        
+    await this.mailerService.sendMail({
+        to: email,
+        subject: 'Password Reset Request',
+        template: './reset-password', // Adjust to your template path
+        context: {
+            resetLink,
+            username
+        },
+    });
+}
+
 }

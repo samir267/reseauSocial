@@ -51,6 +51,16 @@ import { UserRole } from './userRole';
   
     @Column({ nullable: true })
     verificationCodeExpires: Date;
+    @Column({ nullable: true })
+    passwordResetTokenExpires: Date;
+
+    @Column({ nullable: true })
+    passwordResetToken: string;
+    @Column({ nullable: true })
+    googleId: string;
+    @Column({ nullable: true })
+    provider: string;
+  
   
     @CreateDateColumn()
     createdAt: Date;

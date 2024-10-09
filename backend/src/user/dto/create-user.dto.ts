@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString, Matches, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserRole } from '../entities/userRole';
 
@@ -23,9 +23,29 @@ export class CreateUserDto {
         description: 'The password for the user account',
         example: 'securePassword123',
     })
-    @IsNotEmpty()
-    @IsString()
-    password: string;
+  
+    @ApiProperty({
+        description: 'The password of the user',
+        example: 'Password123!', // Example password to display in Swagger UI
+      })
+      @IsNotEmpty()
+      @IsString()
+      @MinLength(8, {
+        message: 'Password must be at least 8 characters long',
+      })
+      @Matches(/(?=.*[a-z])/, {
+        message: 'Password must contain at least one lowercase letter',
+      })
+      @Matches(/(?=.*[A-Z])/, {
+        message: 'Password must contain at least one uppercase letter',
+      })
+      @Matches(/(?=.*\d)/, {
+        message: 'Password must contain at least one number',
+      })
+      @Matches(/(?=.*[@$!%*?&#^()_+|~=`{}[\]:;"'<>,./?\\-])/, {
+        message: 'Password must contain at least one symbol',
+      })
+      password: string;
 
     @ApiProperty({
         description: 'The location of the user (optional)',
@@ -51,4 +71,7 @@ export class CreateUserDto {
     @IsOptional()
     @IsString()
     occupation?: string;
+    @IsOptional()
+    @IsString()
+    provider?: string;
 }
