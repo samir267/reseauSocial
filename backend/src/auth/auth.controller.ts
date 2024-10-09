@@ -14,6 +14,7 @@ import { GoogleOauthGuard } from "./utils/Guard/google.oauth.guard";
 import { UserRole } from "src/user/entities/userRole";
 import { Response } from 'express'; // Import Response from Express
 import { AuthGuard } from "@nestjs/passport";
+import { ConfigService } from "@nestjs/config";
 
 @Controller("auth")
 @ApiTags("auth")
@@ -21,6 +22,7 @@ export class AuthController {
   constructor(private authService: AuthService,
     private jwtService: JwtService,
     private userService: UserService,
+    private config: ConfigService
 
   ) {}
   @Public()
@@ -128,7 +130,7 @@ async googleAuth(@Req() req) { }
 @Public()
 @Get('google/callback')
 @UseGuards(AuthGuard('google'))
-async googleAuthRedirect(@Req() req) {
+async googleAuthRedirect(@Req() req,@Res() res: Response) {
   
     // Google profile info is available in req.user (returned from validate function in GoogleStrategy)
     const user = req.user;
@@ -136,11 +138,34 @@ async googleAuthRedirect(@Req() req) {
     // Call signInSocial to generate JWT access and refresh tokens
     const tokens = await this.authService.signInSocial(user);
 
-    return {
-      message: 'Google authentication successful',
-      ...tokens, // Include the access and refresh tokens
-    };
+    res.cookie('accessToken', tokens.access_token, { httpOnly: true });
+    res.cookie('refreshToken', tokens.refresh_token, { httpOnly: true });
+    return res.redirect(`${this.config.get('FrontendUrl')}/home`);
 }
+@Public()
+@Get('facebook')
+@UseGuards(AuthGuard('facebook'))
+async facebookAuth(@Req() req) {
+  // Initiates the Facebook login flow
+}
+@Public()
+@Get('facebook/callback')
+@UseGuards(AuthGuard('facebook'))
+async facebookAuthRedirect(@Req() req,@Res() res: Response) {
+  const user = req.user;
+
+  console.log('Facebook Auth Success:', user);
+
+  const tokens = await this.authService.signInSocial(user);
+
+
+    // Set tokens in cookies (if desired) or include them in query params for redirection
+    res.cookie('accessToken', tokens.access_token, { httpOnly: true });
+    res.cookie('refreshToken', tokens.refresh_token, { httpOnly: true });
+    return res.redirect(`${this.config.get('FrontendUrl')}/home`);
+    
+}
+
 
 
 }

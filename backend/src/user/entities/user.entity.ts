@@ -60,7 +60,8 @@ import { UserRole } from './userRole';
     googleId: string;
     @Column({ nullable: true })
     provider: string;
-  
+    @Column({ nullable: true })
+    facebookId: string;
   
     @CreateDateColumn()
     createdAt: Date;

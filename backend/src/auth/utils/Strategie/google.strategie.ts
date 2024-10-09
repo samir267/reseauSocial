@@ -5,6 +5,7 @@ import { ConfigService, ConfigType } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
+import { UserRole } from 'src/user/entities/userRole';
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   constructor(
@@ -14,7 +15,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     super({
       clientID: config.get('ClientID'),
       clientSecret: config.get('ClientSecret'),
-      callbackURL: 'http://localhost:3000/auth/google/callback',
+      callbackURL: config.get('callbackURLEmail'),
       scope: ['profile', 'email'],
     });
   }
@@ -40,6 +41,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
           username: displayName,
           googleId: id,
           provider: 'google',
+          role:UserRole.USER
+
         });
         await this.userRepository.save(user);
       }

@@ -25,7 +25,7 @@ export class EmailService {
     });
   }
   async sendPasswordResetEmail(email: string, token: string,username:string): Promise<void> {
-    const baseUrl = this.configService.get<string>('BASE_URL'); // Replace 'BASE_URL' with your actual environment variable key
+    const baseUrl = this.configService.get<string>('FrontendUrl'); // Replace 'BASE_URL' with your actual environment variable key
     const resetLink = encodeURI(`${baseUrl}/reset-password?token=${token}`);
         
     await this.mailerService.sendMail({
