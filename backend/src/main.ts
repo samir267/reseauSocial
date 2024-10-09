@@ -28,6 +28,7 @@ async function bootstrap() {
     .setVersion('1.0') // API version
     .addTag('users') // Add tags relevant to your API
     .addTag('projects') // Assuming you have a projects tag
+    .addBearerAuth()  // This will add the Authorization token input field
     .addTag('auth') // Assuming you have an authentication tag
     .build();
   const document = SwaggerModule.createDocument(app, config);
