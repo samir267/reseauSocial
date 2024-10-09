@@ -16,6 +16,8 @@ export class UserService {
   async findOneBy(email: string): Promise<User | undefined> {
     return await this.userRepository.findOneBy({ email: email });
   }
+ 
+  
   async findOneByUsername(username: string): Promise<User | undefined> {
     return this.userRepository.findOne({ where: { username } });
   }
@@ -61,5 +63,20 @@ export class UserService {
 
     return user.refreshToken;
   }
+  async updateUserVerificationCode(userId: number, code: string, expirationTime: Date): Promise<void> {
+    await this.userRepository.update(userId, {
+      verificationCode: code,
+      verificationCodeExpires: expirationTime,
+    });
+  }
+  async findOneByResetToken(token: string): Promise<User | undefined> {
+    return await this.userRepository.findOne({
+      where: { passwordResetToken: token },
+    });
+  }
+ 
+  
+  
+  
 
 }

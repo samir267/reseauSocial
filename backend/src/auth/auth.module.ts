@@ -6,8 +6,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from 'src/user/user.module';
 import { User } from 'src/user/entities/user.entity';
 import { APP_GUARD } from '@nestjs/core';
-import { AuthGuard } from './utils/auth.guard';
 import { jwtConstants } from './utils/constants';
+import { AuthGuard } from './utils/Guard/auth.guard';
+import { GoogleStrategy } from './utils/Strategie/google.strategie';
 
 
 @Module({
@@ -26,7 +27,8 @@ import { jwtConstants } from './utils/constants';
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
-    AuthService
+    AuthService,
+    GoogleStrategy
   ],
   exports: [AuthService]
 })
