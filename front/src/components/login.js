@@ -22,6 +22,8 @@ function Login() {
 
       if (response.status === 200) {
         toast.success('Login successful!');
+        //navigate('/home'); // Redirect to home after login
+
         console.log('Login successful:', response.data);
       } else {
         toast.error('Invalid credentials, please try again.');
