@@ -1,4 +1,5 @@
-// API for logging in
+
+
 export const loginApi = async (email, password) => {
     try {
         const response = await fetch('http://localhost:5000/auth/login', {
@@ -22,7 +23,6 @@ export const loginApi = async (email, password) => {
     }
 };
 
-// API for registering
 export const registerApi = async (username, email, password, location, role, occupation) => {
     try {
         const response = await fetch('http://localhost:5000/auth/signup', {
@@ -33,15 +33,25 @@ export const registerApi = async (username, email, password, location, role, occ
             body: JSON.stringify({ username, email, password, location, role, occupation }),
         });
 
-        // Check if response is OK
+        const data = await response.json();
+
+        // If the status is not 2xx, throw an error to handle suggestions or failure cases
         if (!response.ok) {
-            throw new Error(`Registration failed with status: ${response.status}`);
+            const errorMessage = data?.message || `Registration failed with status: ${response.status}`;
+            const suggestions = data?.suggestions || [];
+
+            // Re-throw the error with the message and suggestions
+            throw { message: errorMessage, suggestions };
         }
 
-        const data = await response.json();
-        return { status: response.status, data }; 
+        return { status: response.status, data }; // Return successful registration data
+
     } catch (error) {
-        console.error('Error registering:', error);
+        console.error('Error during registration API call:', error); // Log for debugging
+
+        // Re-throw the error to the calling code to handle appropriately
         throw error;
     }
 };
+
+

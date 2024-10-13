@@ -88,7 +88,10 @@ export class AuthService {
         payload.username,
         payload.email,
       );
-      return { message: 'Username already exists. Suggestions:', suggestions };
+      throw new ConflictException({
+        message: 'Username already exists. Suggestions:',
+        suggestions,
+      });
     }
     const code = Math.floor(1000 + Math.random() * 9000).toString();
     const expirationTime = new Date();
