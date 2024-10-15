@@ -47,11 +47,16 @@ function Header({ toggleTheme, theme, user }) {
           onClick={() => navigate("/")}
         >
           <span
-            className={`lg:w-5 lg:h-5 w-3 h-3 ${
-              theme === "dark" ? "bg-black" : "bg-white"
-            } cursor-pointer`}
-          ></span>{" "}
-          {/* Inner circle color change */}
+  className={`lg:w-10 lg:h-10 w-6 h-6 rounded-full flex items-center justify-center ${
+    theme === "dark" ? "bg-black" : "bg-white"
+  } cursor-pointer`}
+>
+  <img
+    src="../images/logo.PNG"
+    alt="Logo"
+    className="lg:w-5 lg:h-5 w-3 h-3"
+  />
+</span>
         </span>
         <span className="lg:mx-5 lg:flex hidden w-full">
           <input
