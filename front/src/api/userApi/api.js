@@ -2,7 +2,7 @@
 
 export const loginApi = async (email, password) => {
     try {
-        const response = await fetch('http://localhost:5000/auth/login', {
+        const response = await fetch('http://localhost:3000/auth/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -25,7 +25,7 @@ export const loginApi = async (email, password) => {
 
 export const registerApi = async (username, email, password, location, role, occupation) => {
     try {
-        const response = await fetch('http://localhost:5000/auth/signup', {
+        const response = await fetch('http://localhost:3000/auth/signup', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
