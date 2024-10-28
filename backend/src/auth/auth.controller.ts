@@ -1,4 +1,5 @@
-import { Body, Controller, Post, HttpCode, HttpStatus, UnauthorizedException, Get, Param, Query, UseGuards, Req, Res } from "@nestjs/common";
+/* eslint-disable prettier/prettier */
+import { Body, Controller, Post, HttpCode, HttpStatus, UnauthorizedException, Get, Param, UseGuards, Req, Res } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Public } from "./utils/public-strategy";
@@ -10,8 +11,7 @@ import { RefreshTokenDto } from "./Dto/RefreshTokenDto";
 import { VerifyCodeDto } from "./Dto/VerifyCodeDto";
 import { ForgetPasswordDto } from "./Dto/ForgetPasswordDto";
 import { ResetPasswordDto } from "./Dto/ResetPasswordDto";
-import { GoogleOauthGuard } from "./utils/Guard/google.oauth.guard";
-import { UserRole } from "src/user/entities/userRole";
+
 import { Response } from 'express'; // Import Response from Express
 import { AuthGuard } from "@nestjs/passport";
 import { ConfigService } from "@nestjs/config";

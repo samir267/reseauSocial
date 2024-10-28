@@ -22,6 +22,8 @@ function Login() {
 
       if (response.status === 200) {
         toast.success('Login successful!');
+        //navigate('/home'); // Redirect to home after login
+
         console.log('Login successful:', response.data);
       } else {
         toast.error('Invalid credentials, please try again.');
@@ -31,7 +33,13 @@ function Login() {
       toast.error('An error occurred. Please try again.');
     }
   };
+  const handleFacebookLogin = () => {
+    window.location.href = 'http://localhost:3000/auth/facebook/callback';
+  };
 
+  const handleGoogleLogin = () => {
+    window.location.href = 'http://localhost:3000/auth/google/callback';
+  };
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
@@ -94,6 +102,24 @@ function Login() {
           >
             Login
           </button>
+           {/* Social Login Buttons */}
+           <div className="mt-4">
+            <button
+              type="button"
+              onClick={handleFacebookLogin}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md py-2 px-4 w-full mb-2"
+            >
+              Login with Facebook
+            </button>
+            <button
+              type="button"
+              onClick={handleGoogleLogin}
+              className="bg-red-500 hover:bg-red-600 text-white font-semibold rounded-md py-2 px-4 w-full"
+            >
+              Login with Google
+            </button>
+          </div>
+
           <label className="block text-gray-600 mt-4 text-center">
             Have an account? <Link to="/register" className="text-blue-500">Register</Link>
           </label>

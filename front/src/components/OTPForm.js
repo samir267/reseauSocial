@@ -2,18 +2,27 @@ import React, { useState, useEffect, useRef } from 'react';
 
 const OTPForm = () => {
   const [otp, setOtp] = useState(new Array(4).fill(''));
+  const [isValid, setIsValid] = useState(new Array(4).fill(null)); // Track validity of each input
   const inputRefs = useRef([]);
 
   // Handle input change
   const handleInputChange = (e, index) => {
     const value = e.target.value;
+    const newOtp = [...otp];
+    const newIsValid = [...isValid];
+
     if (/^[0-9]{1}$/.test(value)) {
-      const newOtp = [...otp];
       newOtp[index] = value;
+      newIsValid[index] = true; // Valid input
       setOtp(newOtp);
+      setIsValid(newIsValid);
+
       if (index < inputRefs.current.length - 1) {
         inputRefs.current[index + 1].focus();
       }
+    } else {
+      newIsValid[index] = false; // Invalid input (not a digit)
+      setIsValid(newIsValid);
     }
   };
 
@@ -49,6 +58,9 @@ const OTPForm = () => {
     console.log('OTP submitted:', otpValue);
   };
 
+  // Check if OTP is valid
+  const isFormValid = otp.every((digit) => /^[0-9]$/.test(digit));
+
   return (
     <main className="relative min-h-screen flex flex-col justify-center bg-slate-50 overflow-hidden">
       <div className="w-full max-w-6xl mx-auto px-4 md:px-6 py-24">
@@ -66,7 +78,13 @@ const OTPForm = () => {
                   <input
                     key={index}
                     type="text"
-                    className="w-14 h-14 text-center text-2xl font-extrabold text-slate-900 bg-slate-100 border border-transparent hover:border-slate-200 appearance-none rounded p-4 outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+                    className={`w-14 h-14 text-center text-2xl font-extrabold bg-slate-100 border ${
+                      isValid[index] === null
+                        ? 'border-transparent'
+                        : isValid[index]
+                        ? 'border-green-500'
+                        : 'border-red-500'
+                    } rounded p-4 outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100`}
                     maxLength="1"
                     value={digit}
                     onChange={(e) => handleInputChange(e, index)}
@@ -80,6 +98,7 @@ const OTPForm = () => {
                 <button
                   type="submit"
                   className="w-full inline-flex justify-center whitespace-nowrap rounded-lg bg-indigo-500 px-3.5 py-2.5 text-sm font-medium text-white shadow-sm shadow-indigo-950/10 hover:bg-indigo-600 focus:outline-none focus:ring focus:ring-indigo-300 transition-colors duration-150"
+                  disabled={!isFormValid} // Disable button if form is not valid
                 >
                   Verify Account
                 </button>
