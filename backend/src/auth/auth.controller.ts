@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Post, HttpCode, HttpStatus, UnauthorizedException, Get, Param, UseGuards, Req, Res } from "@nestjs/common";
+import { Body, Controller,Delete, Post, HttpCode, HttpStatus, UnauthorizedException, Get, Param, UseGuards, Req, Res } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Public } from "./utils/public-strategy";
@@ -103,6 +103,7 @@ export class AuthController {
   async verifyCode(@Body() payload: VerifyCodeDto) {
     return this.authService.verifyCode(payload);
   }
+
   @Public()
   @Post('forget-password')
   @ApiOperation({ summary: 'Request a password reset' })

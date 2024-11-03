@@ -38,7 +38,7 @@ const Home = ({ toggleTheme, theme }) => {
       {/* Right side components */}
 
       <div className="hidden lg:flex items-start justify-start flex-col  p-3 w-1/4 sticky right-0 top-16">
-      <Recent/>
+      <Recent theme={theme}/>
       </div>
     </div>
     </div>

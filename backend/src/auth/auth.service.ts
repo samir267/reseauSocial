@@ -15,8 +15,8 @@ import { User } from 'src/user/entities/user.entity';
 import { ForgetPasswordDto } from './Dto/ForgetPasswordDto';
 import { ResetPasswordDto } from './Dto/ResetPasswordDto';
 import * as crypto from 'crypto';
-import { InjectRepository } from "@nestjs/typeorm";
-import { MongoRepository } from "typeorm";
+import { InjectRepository } from '@nestjs/typeorm';
+import { MongoRepository } from 'typeorm';
 
 @Injectable()
 export class AuthService {
@@ -36,40 +36,46 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-   
-     // Generate Access Token
-     const payload = { sub: user.id, email: user.email };
-     const accessToken = await this.jwtService.signAsync(payload);
- 
-     // Generate Refresh Token
-     const refreshToken = await this.generateRefreshToken(user.id);
-     user.refreshToken = refreshToken;
-     await this.usersService.updateUser(user)// Save refresh token to DB
- 
-     return {
-       access_token: accessToken,
-       refresh_token: refreshToken,
-     };
+    // Generate Access Token
+    const payload = {
+      sub: user.id,
+      email: user.email,
+      isVerifed: user.isVerified,
+    };
+    const accessToken = await this.jwtService.signAsync(payload);
+
+    // Generate Refresh Token
+    const refreshToken = await this.generateRefreshToken(user.id);
+    user.refreshToken = refreshToken;
+    await this.usersService.updateUser(user); // Save refresh token to DB
+
+    return {
+      access_token: accessToken,
+      refresh_token: refreshToken,
+    };
   }
   async signInSocial(user: any) {
     // Here you generate the JWT tokens (access and refresh)
     const payload = { email: user.email, sub: user.id };
-    
+
     const access_token = await this.jwtService.signAsync(payload, {
-      expiresIn: '30m', 
+      expiresIn: '30m',
     });
-  
+
     const refresh_token = await this.jwtService.signAsync(payload, {
       expiresIn: '30d',
     });
-    await this.userRepository.update(user.id, { refreshToken: refresh_token,isVerified:true });
+    await this.userRepository.update(user.id, {
+      refreshToken: refresh_token,
+      isVerified: true,
+    });
 
     return { access_token, refresh_token };
   }
   private async generateRefreshToken(userId: number): Promise<string> {
     const payload = { sub: userId };
     return this.jwtService.signAsync(payload, {
-      expiresIn: '7d', 
+      expiresIn: '7d',
     });
   }
   async signUp(payload: CreateUserDto) {
@@ -96,15 +102,17 @@ export class AuthService {
     const code = Math.floor(1000 + Math.random() * 9000).toString();
     const expirationTime = new Date();
     expirationTime.setMinutes(expirationTime.getMinutes() + 60);
-  
+
     await this.emailService.sendUserWelcome(payload, code);
 
     // Hash the password before saving the user
     const hashedPassword = await this.hashPassword(payload.password);
-    const userData = { ...payload, password: hashedPassword,    verificationCode: code,
-      verificationCodeExpires: expirationTime, 
-
-    }; 
+    const userData = {
+      ...payload,
+      password: hashedPassword,
+      verificationCode: code,
+      verificationCodeExpires: expirationTime,
+    };
     const user = await this.usersService.create(userData);
     return user;
   }
@@ -124,7 +132,11 @@ export class AuthService {
     expirationTime.setMinutes(expirationTime.getMinutes() + 30);
 
     // Update the user's verification code and expiration time
-    await this.usersService.updateUserVerificationCode(user.id, newCode, expirationTime);
+    await this.usersService.updateUserVerificationCode(
+      user.id,
+      newCode,
+      expirationTime,
+    );
 
     // Send the new code via email
     await this.emailService.sendUserWelcome(user, newCode);
@@ -227,78 +239,101 @@ export class AuthService {
     user.isVerified = true;
     user.verificationCode = null; // Clear the verification code after successful verification
     user.verificationCodeExpires = null; // Clear the expiration time
-    await this.usersService.updateUser( user);
+    await this.usersService.updateUser(user);
 
     return { message: 'User verified successfully' };
   }
 
-
-  async forgetPassword(payload: ForgetPasswordDto): Promise<{ message: string }> {
+  async forgetPassword(
+    payload: ForgetPasswordDto,
+  ): Promise<{ message: string }> {
     // Find the user by email
     const user: User = await this.usersService.findOneBy(payload.email);
     if (!user) {
       throw new NotFoundException('User with this email does not exist');
     }
-  
+
     let token: string;
     let isUnique = false;
-  
+
     // Keep generating a new token until a unique one is found
     while (!isUnique) {
       // Generate a secure password reset token
       token = crypto.randomBytes(32).toString('hex'); // Generates a 64-character hex token
-  
+
       // Check if the token is unique
-      const existingUserWithToken = await this.usersService.findOneByResetToken(token);
+      const existingUserWithToken =
+        await this.usersService.findOneByResetToken(token);
       if (!existingUserWithToken) {
         isUnique = true; // If no user has this token, it's unique
       }
     }
-  
+
     // Save the token and its expiration time in the database
     user.passwordResetToken = token;
     user.passwordResetTokenExpires = new Date(Date.now() + 30 * 60 * 1000); // Token expires in 30 minutes
     await this.usersService.updateUser(user);
-  
-    // Send the email with the reset link
-    await this.emailService.sendPasswordResetEmail(user.email, token,user.username);
-    return { message: 'An email with instructions to reset your password has been sent to your registered email address. Please check your inbox and follow the link to create a new password' };
 
+    // Send the email with the reset link
+    await this.emailService.sendPasswordResetEmail(
+      user.email,
+      token,
+      user.username,
+    );
+    return {
+      message:
+        'An email with instructions to reset your password has been sent to your registered email address. Please check your inbox and follow the link to create a new password',
+    };
   }
-  
-  
-  async resetPassword(newPasswordDto:ResetPasswordDto): Promise<{ message: string,user:any }> {
+
+  async resetPassword(
+    newPasswordDto: ResetPasswordDto,
+  ): Promise<{ message: string; user: any }> {
     // Find the user by token
-    const user = await this.usersService.findOneByResetToken(newPasswordDto.token);
-  
+    const user = await this.usersService.findOneByResetToken(
+      newPasswordDto.token,
+    );
+
     if (!user) {
       throw new NotFoundException('Invalid  token');
     }
-  
+
     // Check if the token has expired
     if (user.passwordResetTokenExpires < new Date()) {
       throw new BadRequestException('Token has expired');
     }
-  
+
     // Hash the new password
     const hashedPassword = await this.hashPassword(newPasswordDto.newPassword);
-  
+
     // Update the user's password and clear the reset token fields
     user.password = hashedPassword;
     user.passwordResetToken = null; // Clear the token
     user.passwordResetTokenExpires = null; // Clear the expiration
     await this.usersService.updateUser(user);
-    return { message: 'Password updated successfully' ,user};
-
+    return { message: 'Password updated successfully', user };
   }
+  async logout(userId: string): Promise<{ message: string }> {
+    const user = await this.usersService.findOneById(userId);
+    
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+  
+    // Clear the refresh token
+    user.refreshToken = null;
+    await this.usersService.updateUser(user); // Update user record
+  
+    return { message: 'Logout successful' };
+  }
+  
   googleLogin(req) {
     if (!req.user) {
-      return 'No user from google'
+      return 'No user from google';
     }
     return {
       message: 'User Info from Google',
-      user: req.user
-    }
+      user: req.user,
+    };
   }
-
 }

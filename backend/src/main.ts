@@ -1,9 +1,10 @@
+/* eslint-disable prettier/prettier */
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { config } from 'dotenv';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
+import { WsAdapter } from '@nestjs/platform-ws';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -28,11 +29,12 @@ async function bootstrap() {
     .setVersion('1.0') // API version
     .addTag('users') // Add tags relevant to your API
     .addTag('projects') // Assuming you have a projects tag
-    .addBearerAuth()  // This will add the Authorization token input field
+    .addBearerAuth() // This will add the Authorization token input field
     .addTag('auth') // Assuming you have an authentication tag
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
+  app.useWebSocketAdapter(new WsAdapter(app));
 
   await app.listen(3000);
 }

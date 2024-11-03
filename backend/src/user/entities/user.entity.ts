@@ -1,11 +1,14 @@
+/* eslint-disable prettier/prettier */
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 import { UserRole } from './userRole';
+import { Follower } from 'src/followers/entities/follower.entity';
 
 @Entity()
 export class User {
@@ -67,4 +70,9 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date;
+  @OneToMany(() => Follower, (follower) => follower.follower)
+  following: Follower[];
+
+  @OneToMany(() => Follower, (follower) => follower.followed)
+  followers: Follower[];
 }

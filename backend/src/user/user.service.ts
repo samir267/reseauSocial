@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Injectable ,NotFoundException, UnauthorizedException} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 
@@ -5,8 +6,6 @@ import { MongoRepository } from "typeorm";
 import { User } from "./entities/user.entity";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { jwtConstants } from "src/auth/utils/constants";
-import { MailerService } from '@nestjs-modules/mailer';
-import { EmailService } from "src/email/email.service";
 @Injectable()
 export class UserService {
   constructor(

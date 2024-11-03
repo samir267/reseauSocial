@@ -55,3 +55,78 @@ export const registerApi = async (username, email, password, location, role, occ
 };
 
 
+export const resetPasswordApi = async (token, newPassword) => {
+    try {
+        const response = await fetch('http://localhost:3000/auth/reset-password', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ token, newPassword }),
+        });
+
+        // Check if response is OK (status in the 2xx range)
+        if (!response.ok) {
+            const data = await response.json();
+            const errorMessage = data?.message || `Password reset failed with status: ${response.status}`;
+            throw new Error(errorMessage);
+        }
+
+        const data = await response.json();
+        return { status: response.status, data }; // Return the API response on success
+
+    } catch (error) {
+        console.error('Error resetting password:', error); // Log the error for debugging
+        throw error; // Re-throw to handle in the calling code
+    }
+};
+export const forgetPasswordApi = async (email) => {
+    try {
+        const response = await fetch('http://localhost:3000/auth/forget-password', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email }),
+        });
+
+        // Check if response is OK (status in the 2xx range)
+        if (!response.ok) {
+            const data = await response.json();
+            const errorMessage = data?.message || `Request failed with status: ${response.status}`;
+            throw new Error(errorMessage);
+        }
+
+        const data = await response.json();
+        return { status: response.status, data }; // Return the API response on success
+
+    } catch (error) {
+        console.error('Error sending password reset email:', error); // Log the error for debugging
+        throw error; // Re-throw to handle in the calling code
+    }
+};
+
+export const verificationCodeApi = async (email, code) => {
+    try {
+        const response = await fetch('http://localhost:3000/auth/verify-code', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, code }),
+        });
+
+        // if (!response.ok) {
+        //     const errorMessage = await response.text(); 
+        //     throw new Error(Verification failed with status: ${response.status}. ${errorMessage});
+        // }
+
+        const data = await response.json(); 
+        return { status: response.status, data }; 
+    } catch (error) {
+        console.error('Error during verification code API call:', error); // Log for debugging
+        return { error: error.message }; // Retourner l'erreur
+    }
+};
+
+

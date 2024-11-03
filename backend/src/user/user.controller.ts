@@ -1,27 +1,30 @@
+/* eslint-disable prettier/prettier */
 import {
   Controller,
   Get,
-  Post,
-  Put,
+
   Param,
   Body,
   NotFoundException,
-  UnauthorizedException,
   Patch,
   HttpCode,
   HttpStatus,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/utils/Guard/auth.guard';
 
 @Controller('users')
-@ApiTags('user') 
-@UseGuards(AuthGuard) 
-@ApiBearerAuth() 
+@ApiTags('user')
+@UseGuards(AuthGuard)
+@ApiBearerAuth()
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -115,7 +118,4 @@ export class UserController {
     }
     return user;
   }
-  
-
-
 }

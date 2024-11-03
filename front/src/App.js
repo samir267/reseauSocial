@@ -6,6 +6,8 @@ import Login from './components/login';
 import Register from './components/register';
 import OTPForm from './components/OTPForm';
 import Home from './components/home'; // Import Home component
+import ResetPassword from './components/resetPassword';
+import ForgetPassEmail from './components/forgetpasswordEmail';
 
 // Custom hook for dark/light mode
 export const useDarkMode = () => { // Export the hook
@@ -40,6 +42,8 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/otp" element={<OTPForm />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/forgot-password" element={<ForgetPassEmail />} />
           <Route path="/home" element={<Home toggleTheme={toggleTheme} theme={theme} />} /> {/* Pass toggleTheme and theme */}
         </Routes>
       </Router>

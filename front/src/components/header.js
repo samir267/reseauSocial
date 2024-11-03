@@ -52,7 +52,7 @@ function Header({ toggleTheme, theme, user }) {
   } cursor-pointer`}
 >
   <img
-    src="../images/logo.PNG"
+    src="/assets/logo.png"
     alt="Logo"
     className="lg:w-5 lg:h-5 w-3 h-3"
   />
