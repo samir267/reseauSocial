@@ -35,12 +35,10 @@ export const registerApi = async (username, email, password, location, role, occ
 
         const data = await response.json();
 
-        // If the status is not 2xx, throw an error to handle suggestions or failure cases
         if (!response.ok) {
             const errorMessage = data?.message || `Registration failed with status: ${response.status}`;
             const suggestions = data?.suggestions || [];
 
-            // Re-throw the error with the message and suggestions
             throw { message: errorMessage, suggestions };
         }
 
@@ -49,9 +47,51 @@ export const registerApi = async (username, email, password, location, role, occ
     } catch (error) {
         console.error('Error during registration API call:', error); // Log for debugging
 
-        // Re-throw the error to the calling code to handle appropriately
         throw error;
     }
 };
 
 
+export const verificationCodeApi = async (email, code) => {
+    try {
+        const response = await fetch('http://localhost:3000/auth/verify-code', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, code }),
+        });
+
+        // if (!response.ok) {
+        //     const errorMessage = await response.text(); 
+        //     throw new Error(`Verification failed with status: ${response.status}. ${errorMessage}`);
+        // }
+
+        const data = await response.json(); 
+        return { status: response.status, data }; 
+    } catch (error) {
+        console.error('Error during verification code API call:', error); // Log for debugging
+        return { error: error.message }; // Retourner l'erreur
+    }
+};
+
+
+export const resendCodeApi = async (email) => {
+    try {
+        const response = await fetch(`http://localhost:3000/auth/resend-code/${email}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to resend code with status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data; 
+    } catch (error) {
+        console.error('Error during resend code API call:', error); 
+    }
+}

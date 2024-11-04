@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
+import {verificationCodeApi,resendCodeApi} from '../api/userApi/api';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const OTPForm = () => {
+  const navigate = useNavigate();
+
   const [otp, setOtp] = useState(new Array(4).fill(''));
   const [isValid, setIsValid] = useState(new Array(4).fill(null)); // Track validity of each input
   const inputRefs = useRef([]);
@@ -50,13 +55,45 @@ const OTPForm = () => {
 
   // Handle focus (select all text on focus)
   const handleFocus = (e) => e.target.select();
+  const email = localStorage.getItem('email');
 
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
     const otpValue = otp.join('');
     console.log('OTP submitted:', otpValue);
-  };
+    console.log('Email retrieved from local storage:', email);
+
+    verificationCodeApi(email, otpValue).then((response) => {
+        if (response.status === 201) {
+          toast.success("activation successfully !");
+          setTimeout(() => {
+            navigate("/home");
+          }, 2000);
+
+        } else {
+            console.error('OTP verification failed:', response.data);
+        }
+    }).catch((error) => {
+        console.error('Error during OTP verification:', error);
+    });
+};
+
+
+const onHandleReset = () => {
+  resendCodeApi(email).then((response) => {
+    if (response && response.ok) {
+      toast.success("Code resent successfully, verify your email!");
+    } else {
+      toast.error("Failed to resend code. Please try again.");
+    }
+  }).catch((error) => {
+    console.error('Error in resend code:', error);
+    toast.error("An error occurred. Please try again.");
+  });
+};
+
+  
 
   // Check if OTP is valid
   const isFormValid = otp.every((digit) => /^[0-9]$/.test(digit));
@@ -78,7 +115,7 @@ const OTPForm = () => {
                   <input
                     key={index}
                     type="text"
-                    className={`w-14 h-14 text-center text-2xl font-extrabold bg-slate-100 border ${
+                    className={`w-16 h-14 text-center text-2xl font-extrabold bg-slate-100 border ${
                       isValid[index] === null
                         ? 'border-transparent'
                         : isValid[index]
@@ -106,7 +143,9 @@ const OTPForm = () => {
             </form>
             <div className="text-sm text-slate-500 mt-4">
               Didn't receive code?{' '}
-              <a className="font-medium text-indigo-500 hover:text-indigo-600" href="#0">
+              <a className="font-medium text-indigo-500 hover:text-indigo-600" href="#0"
+              onClick={onHandleReset}
+              >
                 Resend
               </a>
             </div>

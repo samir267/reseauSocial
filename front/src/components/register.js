@@ -31,6 +31,8 @@ function Register() {
       );
 
       if (status === 200) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("email", data.email);
         toast.success("Registration successful!");
         setTimeout(() => {
           navigate("/otp");
