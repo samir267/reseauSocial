@@ -75,4 +75,5 @@ export class User {
 
   @OneToMany(() => Follower, (follower) => follower.followed)
   followers: Follower[];
+    posts: any;
 }

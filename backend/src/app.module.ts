@@ -12,6 +12,7 @@ import { FollowersModule } from './followers/followers.module';
 import { ChatGateway } from './conversation/chat/chat.gateway';
 import { MessageModule } from './message/message.module';
 import { ConversationModule } from './conversation/conversation.module';
+import { PostsModule } from './posts/posts.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { ConversationModule } from './conversation/conversation.module';
     FollowersModule,
     ConversationModule,
     MessageModule,
+    PostsModule,
     
     ],
   controllers: [AppController],

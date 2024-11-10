@@ -1,6 +1,8 @@
 import { IsEmail, IsNotEmpty, IsOptional, IsString, Matches, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserRole } from '../entities/userRole';
+import { OneToMany } from 'typeorm';
+import { Post } from 'src/posts/dto/create-post.dto';
 
 export class CreateUserDto {
     @ApiProperty({
@@ -74,4 +76,8 @@ export class CreateUserDto {
     @IsOptional()
     @IsString()
     provider?: string;
+
+
+    @OneToMany(() => Post, (post) => post.user)
+  posts: Post[];  // Liste des posts créés par l'utilisateur
 }
