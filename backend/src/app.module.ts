@@ -13,6 +13,10 @@ import { ChatGateway } from './conversation/chat/chat.gateway';
 import { MessageModule } from './message/message.module';
 import { ConversationModule } from './conversation/conversation.module';
 import { PostsModule } from './posts/posts.module';
+import { LikesModule } from './likes/likes.module';
+import { CommentsModule } from './comments/comments.module';
+import { SkillsModule } from './skills/skills.module';
+import { UserSkillsModule } from './user-skills/user-skills.module';
 
 @Module({
   imports: [
@@ -29,6 +33,10 @@ import { PostsModule } from './posts/posts.module';
     ConversationModule,
     MessageModule,
     PostsModule,
+    LikesModule,
+    CommentsModule,
+    SkillsModule,
+    UserSkillsModule,
     
     ],
   controllers: [AppController],

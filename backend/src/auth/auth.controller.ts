@@ -52,7 +52,8 @@ export class AuthController {
       email: signUpDto.email, 
       password: signUpDto.password,
       createdAt: new Date(),
-      role:signUpDto.role
+      role:signUpDto.role,
+      posts:[],
     }
     return this.authService.signUp(payload);
   }

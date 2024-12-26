@@ -43,67 +43,57 @@ export class FollowersController {
   
  
   @Public()
-  @Get('followers/:id')
-  @UseGuards(AuthGuard) 
-  @ApiBearerAuth() 
-  @ApiOperation({ summary: 'Get a paginated list of followers for a user' })
-  @ApiQuery({ name: 'page', required: false, description: 'Page number', type: Number })
-  @ApiQuery({ name: 'limit', required: false, description: 'Number of items per page', type: Number })
-  @ApiResponse({
-    status: 200,
-    description: 'List of followers retrieved successfully',
-    schema: {
-      properties: {
-        data: {
-          type: 'array',
-          items: { $ref: getSchemaPath(User) }, // Refers to User model schema
-        },
-        total: { type: 'number', example: 100 },
-        page: { type: 'number', example: 1 },
-        limit: { type: 'number', example: 10 },
+@Get('followers/:id')
+@UseGuards(AuthGuard) 
+@ApiBearerAuth() 
+@ApiOperation({ summary: 'Get the list of all followers for a user' })
+@ApiResponse({
+  status: 200,
+  description: 'List of followers retrieved successfully',
+  schema: {
+    properties: {
+      data: {
+        type: 'array',
+        items: { $ref: getSchemaPath(User) }, // Refers to User model schema
       },
+      total: { type: 'number', example: 100 },
     },
-  })
-  @ApiResponse({ status: 404, description: 'User not found' })
-  async getFollowers(
-    @Param('id', ParseIntPipe) userId: number,
-    @Query('page', ParseIntPipe) page = 1,
-    @Query('limit', ParseIntPipe) limit = 10,
-  ): Promise<PaginatedResult<User>> {
-    return this.followerService.getFollowers(userId, page, limit);
-  }
+  },
+})
+@ApiResponse({ status: 404, description: 'User not found' })
+async getFollowers(
+  @Param('id', ParseIntPipe) userId: number,
+): Promise<{ data: User[]; total: number }> {
+  const followers = await this.followerService.getFollowers(userId);
+  return { data: followers, total: followers.length };
+}
 
-  @Public()
-  @Get('following/:id')
-  @UseGuards(AuthGuard) 
-  @ApiBearerAuth() 
-  @ApiOperation({ summary: 'Get a paginated list of users followed by a user' })
-  @ApiQuery({ name: 'page', required: false, description: 'Page number', type: Number })
-  @ApiQuery({ name: 'limit', required: false, description: 'Number of items per page', type: Number })
-  @ApiResponse({
-    status: 200,
-    description: 'List of followed users retrieved successfully',
-    schema: {
-      properties: {
-        data: {
-          type: 'array',
-          items: { $ref: getSchemaPath(User) }, // Refers to User model schema
-        },
-        total: { type: 'number', example: 100 },
-        page: { type: 'number', example: 1 },
-        limit: { type: 'number', example: 10 },
+@Public()
+@Get('following/:id')
+@UseGuards(AuthGuard) 
+@ApiBearerAuth() 
+@ApiOperation({ summary: 'Get the list of all users followed by a user' })
+@ApiResponse({
+  status: 200,
+  description: 'List of followed users retrieved successfully',
+  schema: {
+    properties: {
+      data: {
+        type: 'array',
+        items: { $ref: getSchemaPath(User) }, // Refers to User model schema
       },
+      total: { type: 'number', example: 100 },
     },
-  })
-  @ApiResponse({ status: 404, description: 'User not found' })
-  async getFollowing(
-    @Param('id', ParseIntPipe) userId: number,
-    @Query('page', ParseIntPipe) page = 1,
-    @Query('limit', ParseIntPipe) limit = 10,
-  ): Promise<PaginatedResult<User>> {
-    return this.followerService.getFollowing(userId, page, limit);
-  }
-  
+  },
+})
+@ApiResponse({ status: 404, description: 'User not found' })
+async getFollowing(
+  @Param('id', ParseIntPipe) userId: number,
+): Promise<{ data: User[]; total: number }> {
+  const following = await this.followerService.getFollowing(userId);
+  return { data: following, total: following.length };
+}
+
   
 
   

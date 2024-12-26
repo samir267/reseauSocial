@@ -50,8 +50,17 @@ export class UserService {
     return this.userRepository.save(user);
   }
   async findOneById(id:string):Promise<User>{
-    return this.userRepository.findOneBy({id});
-  }
+    const user = await this.userRepository
+    .createQueryBuilder('user')
+    .leftJoinAndSelect('user.followers', 'follower') 
+    .leftJoinAndSelect('user.following', 'following') 
+    .where('user.id = :id', { id })
+    .getOne();
+
+  return user;  }
+
+
+  
    // Function to get refresh token by user ID
    async getRefreshTokenByUserId(userId: number, key: string): Promise<string> {
     // Verify the key (you might want to do this in a more secure way)
@@ -85,6 +94,24 @@ export class UserService {
     });
   }
  
+  async getAllUsers(currentUserId: number): Promise<User[]> {
+    const users = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.followers', 'follower') // Charger les followers
+      .leftJoinAndSelect('user.following', 'following') // Charger les following
+      .where('NOT EXISTS (' +
+        'SELECT 1 FROM followers f WHERE f.followerId = :currentUserId AND f.followedId = user.id' +
+      ')', { currentUserId })
+      .getMany(); // Récupérer les utilisateurs qui ne sont pas suivis par l'utilisateur actuel
+  
+    console.log('Users not followed by current user:', users);
+    return users;
+  }
+  
+  
+  
+  
+  
   
   
   

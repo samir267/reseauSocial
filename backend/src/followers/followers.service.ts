@@ -34,37 +34,24 @@ export class FollowersService {
   async unfollowUser(followerId: number, followedId: number): Promise<void> {
     await this.FollowersRepository.delete({ follower: { id: followerId }, followed: { id: followedId } });
   }
-  async getFollowers(userId: number, page: number, limit: number): Promise<PaginatedResult<User>> {
-    const [followers, total] = await this.FollowersRepository.findAndCount({
+  async getFollowers(userId: number): Promise<User[]> {
+    const followers = await this.FollowersRepository.find({
       where: { followed: { id: userId } },
       relations: ['follower'],
-      skip: (page - 1) * limit,
-      take: limit,
     });
   
-    return {
-      data: followers.map(follow => follow.follower),
-      total,
-      page,
-      limit,
-    };
+    return followers.map(follow => follow.follower);
   }
   
-  async getFollowing(userId: number, page: number, limit: number): Promise<PaginatedResult<User>> {
-    const [following, total] = await this.FollowersRepository.findAndCount({
+  async getFollowing(userId: number): Promise<User[]> {
+    const following = await this.FollowersRepository.find({
       where: { follower: { id: userId } },
       relations: ['followed'],
-      skip: (page - 1) * limit,
-      take: limit,
     });
   
-    return {
-      data: following.map(follow => follow.followed),
-      total,
-      page,
-      limit,
-    };
+    return following.map(follow => follow.followed);
   }
+  
   
   
 }

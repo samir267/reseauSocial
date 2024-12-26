@@ -9,6 +9,7 @@ import Post from './post';
 import Recent from './Recent';
 
 const Home = ({ toggleTheme, theme }) => {
+  
     const user = {
         id: '123',
         name: 'John Doe',

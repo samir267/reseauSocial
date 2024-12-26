@@ -130,3 +130,95 @@ export const verificationCodeApi = async (email, code) => {
 };
 
 
+
+export const resendCodeApi = async (email) => {
+    try {
+        const response = await fetch(`http://localhost:3000/auth/resend-code/${email}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        // Vérifier si la réponse est OK (statut 2xx)
+        if (!response.ok) {
+            const data = await response.json();
+            const errorMessage = data?.message || `Resending code failed with status: ${response.status}`;
+            throw new Error(errorMessage);
+        }
+
+        const data = await response.json();
+        return { status: response.status, data }; // Retourner la réponse de l'API en cas de succès
+
+    } catch (error) {
+        console.error('Error resending verification code:', error); // Journaliser l'erreur pour débogage
+        throw error; // Rejeter pour gérer dans le code appelant
+    }
+
+};
+export const getAllUsers = async (currentUserId) => {
+    try {
+      const response = await fetch(`http://localhost:3000/users/all/${currentUserId}`, {
+        method: 'GET',
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        const errorMessage = errorData?.message || `Request failed with status: ${response.status}`;
+        throw new Error(errorMessage);
+      }
+  
+      const data = await response.json();
+      return { status: response.status, data }; // Retourner la réponse avec le statut et les données
+  
+    } catch (error) {
+      // Gérer l'erreur
+      console.error('Error fetching users:', error);
+      return { status: 'error', message: error.message }; // Retourner un message d'erreur
+    }
+  };
+  
+
+
+export const getUserById = async (userId) => {
+    try {
+        const response = await fetch(`http://localhost:3000/users/${userId}`, {
+            method: 'GET',
+        });
+
+        if (!response.ok) {
+            const data = await response.json();
+            const errorMessage = data?.message || `Request failed with status: ${response.status}`;
+            throw new Error(errorMessage);
+        }
+
+        const data = await response.json();
+        return { status: response.status, data };
+
+    } catch (error) {
+        console.error('Error fetching user:', error);
+        throw error;
+    }
+};
+
+
+export const followUser= async (followedId,userId) => {
+    try {
+        const response = await fetch(`http://localhost:3000/followers/follow/${followedId}/${userId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (!response.ok) {
+            const data = await response.json();
+            const errorMessage = data?.message || `Request failed with status: ${response.status}`;
+            throw new Error(errorMessage);
+        }
+        const data = await response.json();
+        return { status: response.status, data };
+    } catch (error) {
+        console.error('Error following user:', error);
+        throw error;
+    }
+};

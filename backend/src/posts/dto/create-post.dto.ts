@@ -1,18 +1,15 @@
-// src/posts/entities/post.entity.ts
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { User } from '../../user/entities/user.entity';
+import { IsNumber, IsString, IsNotEmpty, IsOptional } from 'class-validator';
 
-@Entity('posts')
-export class Post {
-  @PrimaryGeneratedColumn()
-  id: number;
+export class CreatePostDto {
+  // @IsNumber()
+  // @IsNotEmpty()
+  userId: number;
 
-  @Column()
-  image: string;
+  // @IsString()
+  // @IsNotEmpty()
+  // title: string;
 
-  @Column()
-  text: string;
-
-  @ManyToOne(() => User, (user) => user.posts, { onDelete: 'CASCADE' })
-  user: User;
+  @IsOptional() // Rendez le champ optionnel si nécessaire
+  @IsString()
+  text?: string;
 }

@@ -2,8 +2,7 @@ import { IsEmail, IsNotEmpty, IsOptional, IsString, Matches, MinLength } from 'c
 import { ApiProperty } from '@nestjs/swagger';
 import { UserRole } from '../entities/userRole';
 import { OneToMany } from 'typeorm';
-import { Post } from 'src/posts/dto/create-post.dto';
-
+import { Post } from 'src/posts/entities/post.entity';
 export class CreateUserDto {
     @ApiProperty({
         description: 'The username of the user',

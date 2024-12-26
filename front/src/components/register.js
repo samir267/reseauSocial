@@ -30,14 +30,17 @@ function Register() {
         occupation
       );
 
+      console.log("Registration response:", { status, data });
+
       if (status === 200) {
         toast.success("Registration successful!");
+        localStorage.setItem("access_token", data.access_token);
+        localStorage.setItem("email", email);
         setTimeout(() => {
           navigate("/otp");
         }, 2000);
       }
     } catch (error) {
-      console.error("Registration error:", error);
       if (error.suggestions && error.suggestions.length > 0) {
         setSuggestions(error.suggestions);
         toast.error("Username already exists. Here are some suggestions:");

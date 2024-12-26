@@ -23,12 +23,15 @@ function Login() {
         const decodedToken = jwtDecode(response.data.access_token);
         console.log('Decoded token:', decodedToken);
         
-        if (!decodedToken.isVerified) {
+        if (!decodedToken) {
           toast.error('You must verify your email');
           navigate('/otp');
         } else {
           toast.success('Login successful!');
           localStorage.setItem('access_token', response.data.access_token);
+          localStorage.setItem('email', email);
+          localStorage.setItem('id',decodedToken.sub);
+          navigate('/home');
           setIsLoggedIn(true);
         }
       } else {

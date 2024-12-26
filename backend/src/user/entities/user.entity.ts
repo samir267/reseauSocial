@@ -9,6 +9,11 @@ import {
 } from 'typeorm';
 import { UserRole } from './userRole';
 import { Follower } from 'src/followers/entities/follower.entity';
+import { Post } from 'src/posts/entities/post.entity';
+import { Likes } from 'src/likes/entities/likes.entity';
+import { Comments } from 'src/comments/entities/comments.entity';
+import { skills } from 'src/skills/entities/skill.entity';
+import { UserSkill } from 'src/user-skills/entities/user-skill.entity';
 
 @Entity()
 export class User {
@@ -23,6 +28,7 @@ export class User {
 
   @Column()
   password: string;
+
   @Column({ nullable: true })
   refreshToken: string;
 
@@ -31,6 +37,7 @@ export class User {
 
   @Column({ nullable: true })
   location: string;
+
   @Column({ type: 'enum', enum: UserRole, nullable: true })
   role: UserRole;
 
@@ -45,23 +52,28 @@ export class User {
 
   @Column({ type: 'boolean', default: false })
   isVerified: boolean;
+
   @Column({ type: 'boolean', default: false })
   isDeactivated: boolean;
- 
+
   @Column({ nullable: true })
   verificationCode: string;
 
   @Column({ nullable: true })
   verificationCodeExpires: Date;
+
   @Column({ nullable: true })
   passwordResetTokenExpires: Date;
 
   @Column({ nullable: true })
   passwordResetToken: string;
+
   @Column({ nullable: true })
   googleId: string;
+
   @Column({ nullable: true })
   provider: string;
+
   @Column({ nullable: true })
   facebookId: string;
 
@@ -70,10 +82,23 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
   @OneToMany(() => Follower, (follower) => follower.follower)
   following: Follower[];
 
   @OneToMany(() => Follower, (follower) => follower.followed)
   followers: Follower[];
-    posts: any;
+
+  // Définition de la relation OneToMany avec l'entité Post
+  @OneToMany(() => Post, (post) => post.user)
+  posts: Post[];  
+
+  @OneToMany(() => Likes, (like) =>like.user  )
+  likes: Likes[];
+
+  @OneToMany(() => Comments, (comments) =>comments.user  )
+  comments: Comments[];
+  
+  @OneToMany(() => UserSkill, (userSkill) => userSkill.user)
+  userSkills: UserSkill[];
 }

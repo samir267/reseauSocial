@@ -20,11 +20,13 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/utils/Guard/auth.guard';
+import { Public } from 'src/auth/utils/public-strategy';
 
 @Controller('users')
 @ApiTags('user')
 @UseGuards(AuthGuard)
 @ApiBearerAuth()
+@Public()
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -39,6 +41,23 @@ export class UserController {
   async deactivateUser(@Param('id') userId: string): Promise<User> {
     return this.userService.deactivateUser(userId);
   }
+
+
+
+  @Get('all/:currentUserId')
+@ApiOperation({ summary: 'Get All Users' })
+@HttpCode(HttpStatus.OK)
+@ApiResponse({
+  status: 200,
+  description: 'All users found.',
+  type: [User], // Notez que cela doit être un tableau d'utilisateurs, pas un utilisateur unique
+})
+async getAllUsers(@Param('currentUserId') currentUserId: number): Promise<User[]> {
+  return this.userService.getAllUsers(currentUserId);
+}
+
+
+
 
   @HttpCode(HttpStatus.OK)
   @Get(':id')
@@ -118,4 +137,8 @@ export class UserController {
     }
     return user;
   }
+
+
+  
+
 }
